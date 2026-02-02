@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Session data
+sessions/
+
+# Logs
+logs/
+
+# Environment
+.env
