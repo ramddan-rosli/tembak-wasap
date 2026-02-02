@@ -3,3 +3,4 @@
 /public/build
 public/hot
 /vendor
+.env
