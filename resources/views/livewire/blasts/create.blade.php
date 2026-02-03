@@ -81,6 +81,42 @@
                 @enderror
             </div>
 
+            <!-- Message Delay -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Message Delay (seconds)</label>
+                <p class="mt-1 text-xs text-gray-500">Random delay between each message to avoid detection. Suggested: 5-15 seconds</p>
+                <div class="mt-2 grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="delay_min" class="block text-xs font-medium text-gray-500">Minimum</label>
+                        <input
+                            wire:model="delay_min"
+                            type="number"
+                            id="delay_min"
+                            min="1"
+                            max="300"
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm @error('delay_min') border-red-500 @enderror"
+                        >
+                        @error('delay_min')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="delay_max" class="block text-xs font-medium text-gray-500">Maximum</label>
+                        <input
+                            wire:model="delay_max"
+                            type="number"
+                            id="delay_max"
+                            min="1"
+                            max="300"
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm @error('delay_max') border-red-500 @enderror"
+                        >
+                        @error('delay_max')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
             <!-- Message -->
             <div>
                 <label for="message" class="block text-sm font-medium text-gray-700">Message</label>

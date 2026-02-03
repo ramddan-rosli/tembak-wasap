@@ -18,6 +18,8 @@ class BlastSchedule extends Model
         'message',
         'media_path',
         'media_type',
+        'delay_min',
+        'delay_max',
         'scheduled_at',
         'status',
         'total_recipients',
@@ -32,7 +34,17 @@ class BlastSchedule extends Model
             'total_recipients' => 'integer',
             'sent_count' => 'integer',
             'failed_count' => 'integer',
+            'delay_min' => 'integer',
+            'delay_max' => 'integer',
         ];
+    }
+
+    /**
+     * Get a random delay between min and max.
+     */
+    public function getRandomDelay(): int
+    {
+        return rand($this->delay_min ?? 5, $this->delay_max ?? 15);
     }
 
     /**

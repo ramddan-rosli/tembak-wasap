@@ -33,6 +33,12 @@ class Create extends Component
     #[Validate('required|date|after:now')]
     public string $scheduled_at = '';
 
+    #[Validate('required|integer|min:1|max:300')]
+    public int $delay_min = 5;
+
+    #[Validate('required|integer|min:1|max:300|gte:delay_min')]
+    public int $delay_max = 15;
+
     #[Validate('required|string')]
     public string $phone_numbers = '';
 
@@ -86,6 +92,8 @@ class Create extends Component
             'message' => $this->message,
             'media_path' => $mediaPath,
             'media_type' => $mediaType,
+            'delay_min' => $this->delay_min,
+            'delay_max' => $this->delay_max,
             'scheduled_at' => $this->scheduled_at,
             'status' => 'pending',
             'total_recipients' => count($numbers),

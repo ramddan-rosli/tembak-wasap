@@ -37,16 +37,21 @@ class ProcessBlastSchedule implements ShouldQueue
             return;
         }
 
-        // Get message delay from config (default 2 seconds)
-        $delay = config('whatsapp.message_delay', 2);
+        // Get delay settings from blast (default 5-15 seconds)
+        $delayMin = $this->blast->delay_min ?? 5;
+        $delayMax = $this->blast->delay_max ?? 15;
 
-        // Dispatch individual message jobs with staggered delays
-        foreach ($recipients as $index => $recipient) {
+        // Dispatch individual message jobs with random staggered delays
+        $cumulativeDelay = 0;
+        foreach ($recipients as $recipient) {
             SendWhatsappMessage::dispatch($recipient)
-                ->delay(now()->addSeconds($index * $delay));
+                ->delay(now()->addSeconds($cumulativeDelay));
+
+            // Add random delay for next message
+            $cumulativeDelay += rand($delayMin, $delayMax);
         }
 
-        Log::info("Dispatched {$recipients->count()} message jobs for blast {$this->blast->id}");
+        Log::info("Dispatched {$recipients->count()} message jobs for blast {$this->blast->id} with random delays ({$delayMin}-{$delayMax}s)");
     }
 
     public function failed(\Throwable $exception): void
