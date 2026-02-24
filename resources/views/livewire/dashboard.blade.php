@@ -133,62 +133,100 @@
                     </a>
                 </div>
             @else
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Device</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scheduled</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($recentBlasts as $blast)
-                            <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('blasts.show', $blast) }}'">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {{ $blast->name }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $blast->whatsappDevice->name ?? 'N/A' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $blast->scheduled_at->format('M d, Y H:i') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <!-- Mobile Card Layout -->
+                <div class="block md:hidden divide-y divide-gray-200">
+                    @foreach($recentBlasts as $blast)
+                        <a href="{{ route('blasts.show', $blast) }}" class="block p-4 hover:bg-gray-50">
+                            <div class="flex items-start justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-900 break-words min-w-0 flex-1 mr-2">{{ $blast->name }}</span>
+                                @switch($blast->status)
+                                    @case('pending')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 flex-shrink-0">Pending</span>
+                                        @break
+                                    @case('processing')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 flex-shrink-0">Processing</span>
+                                        @break
+                                    @case('completed')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 flex-shrink-0">Completed</span>
+                                        @break
+                                    @case('failed')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 flex-shrink-0">Failed</span>
+                                        @break
+                                @endswitch
+                            </div>
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
+                                <span>{{ $blast->whatsappDevice->name ?? 'N/A' }}</span>
+                                <span>{{ $blast->scheduled_at->format('M d, Y H:i') }}</span>
+                                <span>
                                     {{ $blast->sent_count }}/{{ $blast->total_recipients }}
                                     @if($blast->failed_count > 0)
                                         <span class="text-red-500">({{ $blast->failed_count }} failed)</span>
                                     @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @switch($blast->status)
-                                        @case('pending')
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                Pending
-                                            </span>
-                                            @break
-                                        @case('processing')
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                Processing
-                                            </span>
-                                            @break
-                                        @case('completed')
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Completed
-                                            </span>
-                                            @break
-                                        @case('failed')
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                Failed
-                                            </span>
-                                            @break
-                                    @endswitch
-                                </td>
+                                </span>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+
+                <!-- Desktop Table Layout -->
+                <div class="hidden md:block overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Device</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scheduled</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($recentBlasts as $blast)
+                                <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('blasts.show', $blast) }}'">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ $blast->name }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $blast->whatsappDevice->name ?? 'N/A' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $blast->scheduled_at->format('M d, Y H:i') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $blast->sent_count }}/{{ $blast->total_recipients }}
+                                        @if($blast->failed_count > 0)
+                                            <span class="text-red-500">({{ $blast->failed_count }} failed)</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @switch($blast->status)
+                                            @case('pending')
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                    Pending
+                                                </span>
+                                                @break
+                                            @case('processing')
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                    Processing
+                                                </span>
+                                                @break
+                                            @case('completed')
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                    Completed
+                                                </span>
+                                                @break
+                                            @case('failed')
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                    Failed
+                                                </span>
+                                                @break
+                                        @endswitch
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             @endif
         </div>
     </div>

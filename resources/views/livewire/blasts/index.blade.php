@@ -76,80 +76,60 @@
                 </div>
             </div>
         @else
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Device</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scheduled</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($blasts as $blast)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="{{ route('blasts.show', $blast) }}" class="text-sm font-medium text-gray-900 hover:text-green-600">
+            <!-- Mobile Card Layout -->
+            <div class="block lg:hidden divide-y divide-gray-200">
+                @foreach($blasts as $blast)
+                    <div class="p-4 space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="min-w-0 flex-1">
+                                <a href="{{ route('blasts.show', $blast) }}" class="text-sm font-medium text-gray-900 hover:text-green-600 break-words">
                                     {{ $blast->name }}
                                 </a>
                                 @if($blast->hasMedia())
-                                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                    <span class="ml-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
                                         <svg class="mr-1 h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                                         </svg>
                                         Media
                                     </span>
                                 @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $blast->whatsappDevice->name ?? 'N/A' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $blast->scheduled_at->format('M d, Y H:i') }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="w-full bg-gray-200 rounded-full h-2 mr-2 max-w-[100px]">
-                                        <div
-                                            class="h-2 rounded-full {{ $blast->failed_count > 0 ? 'bg-yellow-500' : 'bg-green-500' }}"
-                                            style="width: {{ $blast->getProgressPercentage() }}%"
-                                        ></div>
-                                    </div>
-                                    <span class="text-sm text-gray-500">
-                                        {{ $blast->sent_count }}/{{ $blast->total_recipients }}
-                                    </span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            </div>
+                            <div class="ml-2 flex-shrink-0">
                                 @switch($blast->status)
                                     @case('pending')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                            Pending
-                                        </span>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
                                         @break
                                     @case('processing')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                            Processing
-                                        </span>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Processing</span>
                                         @break
                                     @case('completed')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                            Completed
-                                        </span>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
                                         @break
                                     @case('failed')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                            Failed
-                                        </span>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Failed</span>
                                         @break
                                 @endswitch
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('blasts.show', $blast) }}" class="text-green-600 hover:text-green-900 mr-3">
-                                    View
-                                </a>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
+                            <span>{{ $blast->whatsappDevice->name ?? 'N/A' }}</span>
+                            <span>{{ $blast->scheduled_at->format('M d, Y H:i') }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center flex-1 mr-4">
+                                <div class="w-full bg-gray-200 rounded-full h-2 mr-2 max-w-[120px]">
+                                    <div
+                                        class="h-2 rounded-full {{ $blast->failed_count > 0 ? 'bg-yellow-500' : 'bg-green-500' }}"
+                                        style="width: {{ $blast->getProgressPercentage() }}%"
+                                    ></div>
+                                </div>
+                                <span class="text-sm text-gray-500">{{ $blast->sent_count }}/{{ $blast->total_recipients }}</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm font-medium">
+                                <a href="{{ route('blasts.show', $blast) }}" class="text-green-600 hover:text-green-900">View</a>
+                                @if($blast->status !== 'completed')
+                                    <a href="{{ route('blasts.edit', $blast) }}" class="text-blue-600 hover:text-blue-900">Edit</a>
+                                @endif
                                 @if($blast->status === 'pending')
                                     <button
                                         wire:click="deleteBlast({{ $blast->id }})"
@@ -159,11 +139,110 @@
                                         Delete
                                     </button>
                                 @endif
-                            </td>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Desktop Table Layout -->
+            <div class="hidden lg:block overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Device</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scheduled</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($blasts as $blast)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <div class="max-w-xs">
+                                        <a href="{{ route('blasts.show', $blast) }}" class="text-sm font-medium text-gray-900 hover:text-green-600 break-words">
+                                            {{ $blast->name }}
+                                        </a>
+                                        @if($blast->hasMedia())
+                                            <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                                <svg class="mr-1 h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                                </svg>
+                                                Media
+                                            </span>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $blast->whatsappDevice->name ?? 'N/A' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $blast->scheduled_at->format('M d, Y H:i') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-full bg-gray-200 rounded-full h-2 mr-2 max-w-[100px]">
+                                            <div
+                                                class="h-2 rounded-full {{ $blast->failed_count > 0 ? 'bg-yellow-500' : 'bg-green-500' }}"
+                                                style="width: {{ $blast->getProgressPercentage() }}%"
+                                            ></div>
+                                        </div>
+                                        <span class="text-sm text-gray-500">
+                                            {{ $blast->sent_count }}/{{ $blast->total_recipients }}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @switch($blast->status)
+                                        @case('pending')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                Pending
+                                            </span>
+                                            @break
+                                        @case('processing')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                Processing
+                                            </span>
+                                            @break
+                                        @case('completed')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Completed
+                                            </span>
+                                            @break
+                                        @case('failed')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                Failed
+                                            </span>
+                                            @break
+                                    @endswitch
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="{{ route('blasts.show', $blast) }}" class="text-green-600 hover:text-green-900 mr-3">
+                                        View
+                                    </a>
+                                    @if($blast->status !== 'completed')
+                                        <a href="{{ route('blasts.edit', $blast) }}" class="text-blue-600 hover:text-blue-900 mr-3">
+                                            Edit
+                                        </a>
+                                    @endif
+                                    @if($blast->status === 'pending')
+                                        <button
+                                            wire:click="deleteBlast({{ $blast->id }})"
+                                            wire:confirm="Are you sure you want to delete this blast schedule?"
+                                            class="text-red-600 hover:text-red-900"
+                                        >
+                                            Delete
+                                        </button>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             <!-- Pagination -->
             <div class="px-4 py-3 bg-gray-50 border-t border-gray-200">

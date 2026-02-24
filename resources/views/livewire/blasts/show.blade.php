@@ -22,14 +22,14 @@
 
     <!-- Blast Info -->
     <div class="bg-white shadow rounded-lg mb-6">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <div>
-                <h1 class="text-xl font-semibold text-gray-900">{{ $blast->name }}</h1>
+        <div class="px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+            <div class="min-w-0">
+                <h1 class="text-xl font-semibold text-gray-900 break-words">{{ $blast->name }}</h1>
                 <p class="text-sm text-gray-500 mt-1">
                     Scheduled for {{ $blast->scheduled_at->format('M d, Y \a\t H:i') }}
                 </p>
             </div>
-            <div>
+            <div class="flex-shrink-0">
                 @switch($blast->status)
                     @case('pending')
                         <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
@@ -148,7 +148,7 @@
 
     <!-- Recipients Table -->
     <div class="bg-white shadow rounded-lg">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <div class="px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
             <h2 class="text-lg font-medium text-gray-900">Recipients</h2>
             <select
                 wire:model.live="recipientFilter"
@@ -161,7 +161,42 @@
             </select>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- Mobile Card Layout -->
+        <div class="block md:hidden divide-y divide-gray-200">
+            @forelse($recipients as $recipient)
+                <div class="p-4 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-900">{{ $recipient->phone_number }}</span>
+                        @switch($recipient->status)
+                            @case('pending')
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                @break
+                            @case('sent')
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Sent</span>
+                                @break
+                            @case('failed')
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Failed</span>
+                                @break
+                        @endswitch
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        {{ $recipient->sent_at?->format('M d, Y H:i:s') ?? '-' }}
+                    </div>
+                    @if($recipient->error_message)
+                        <div class="text-sm text-red-600 break-words">
+                            {{ $recipient->error_message }}
+                        </div>
+                    @endif
+                </div>
+            @empty
+                <div class="p-4 text-center text-sm text-gray-500">
+                    No recipients found.
+                </div>
+            @endforelse
+        </div>
+
+        <!-- Desktop Table Layout -->
+        <div class="hidden md:block overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>

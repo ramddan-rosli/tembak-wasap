@@ -4,6 +4,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Blasts\Create as BlastCreate;
 use App\Livewire\Blasts\Index as BlastIndex;
+use App\Livewire\Blasts\Edit as BlastEdit;
 use App\Livewire\Blasts\Show as BlastShow;
 use App\Livewire\Dashboard;
 use App\Livewire\WhatsappDevices\Index as WhatsappIndex;
@@ -34,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/blasts', BlastIndex::class)->name('blasts.index');
     Route::get('/blasts/create', BlastCreate::class)->name('blasts.create');
     Route::get('/blasts/{blast}', BlastShow::class)->name('blasts.show');
+    Route::get('/blasts/{blast}/edit', BlastEdit::class)->name('blasts.edit');
 
     // Logout
     Route::post('/logout', function () {
